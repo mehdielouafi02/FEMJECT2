@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Errors from "./pages/Errors/Errors";
+import Landpage from "./pages/Landpage/Landpage";
+import Login from "./pages/Login/Login";
+import Profile from "./pages/Profile/Profile";
+import Register from "./pages/Register/Register";
+import { Route, Switch } from "react-router-dom";
+import Navbar from "./Components/Navbar/Navbar"; 
+import PrivateRoute from "./router/PrivateRoute";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { current } from "./Redux/actions/user";
+import ProductList from "./assets/Product/ProductList";
+import Admin from "./pages/Admin/Admin";
+import Employee from "./pages/Employee/Employee";
 
 function App() {
+  const [isConnected, setIsConnected] = useState(false)
+  const dispatch = useDispatch();
+  const token= localStorage.getItem("token")
+  useEffect(() => {
+    if(token){
+    dispatch(current())}
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Navbar />
+      <Switch>
+        <Route exact path="/" component={Landpage} />
+        <Route path="/Admin" component={Admin}/>
+        <Route path="/Employee" component={Employee}/>
+        <Route path="/products" component={ProductList} />
+        <Route path="/register" component={Register} />
+        <Route path="/login" component={Login} />
+        <PrivateRoute path="/profile" component={Profile} />
+        <Route path="/*" component={Errors} />
+      </Switch>
     </div>
   );
 }
